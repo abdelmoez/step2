@@ -388,8 +388,9 @@ function calculateScore() {
     const upperBound = meanScore + standardDeviation;
 
     // Display the final predicted score
-    document.getElementById('calculatedScore').textContent = Math.round(finalPredictedScore.toFixed(2))+' <h6><span class="badge text-bg-secondary"> Range<br> ${lowerBound.toFixed(2)} - ${upperBound.toFixed(2)}</span></h6>';
-    document.getElementById('scoreDisplay').classList.add('score-visible');
+    document.getElementById('calculatedScore').textContent = Math.round(finalPredictedScore.toFixed(2));
+    document.getElementById('calculatedScore').innerHTML +=  `<h6><span class="badge text-bg-secondary"> Range<br> ${lowerBound.toFixed(2)} - ${upperBound.toFixed(2)}</span></h6>`;
+	document.getElementById('scoreDisplay').classList.add('score-visible');
     document.getElementById("scoreDisplay").scrollIntoView();
 }
 
