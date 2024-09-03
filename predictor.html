@@ -267,9 +267,9 @@ function calculateScore() {
         {score: document.getElementById('uwsa1').value, days: document.getElementById('uwsa1d').value, weight: 0.453807842},
         {score: document.getElementById('uwsa2').value, days: document.getElementById('uwsa2d').value, weight: 0.526745453},
         {score: document.getElementById('uwsa3').value, days: document.getElementById('uwsa3d').value, weight: 0.436985545},
-        {score: document.getElementById('free120_2019').value, days: document.getElementById('free120_2019d').value, weight: 0.002946717},
-        {score: document.getElementById('free120_2021').value, days: document.getElementById('free120_2021d').value, weight: 0.504134759},
-        {score: document.getElementById('free120_2023').value, days: document.getElementById('free120_2023d').value, weight: 0.429805012}
+        {score: (document.getElementById('free120_2019').value)*1.4733 + 128.85, days: document.getElementById('free120_2019d').value, weight: 0.002946717},
+        {score: (document.getElementById('free120_2021').value)*1.232178592 + 158.9514262, days: document.getElementById('free120_2021d').value, weight: 0.504134759},
+        {score: (document.getElementById('free120_2023').value)*1.103017449 + 171.0613059, days: document.getElementById('free120_2023d').value, weight: 0.429805012}
     ];
 
     // Filter out empty fields
