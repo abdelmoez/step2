@@ -370,9 +370,25 @@ function calculateScore() {
 
     // Add roomForImprovement to the final predicted score
     finalPredictedScore += roomForImprovement;
+	
+    // Calculate the mean (already done, but explicitly stated here)
+    const meanScore = finalPredictedScore;
+
+    // Calculate the variance
+    let variance = 0;
+    filteredInputs.forEach(input => {
+        variance += input.normalizedWeight * Math.pow((parseFloat(input.score) - meanScore), 2);
+    });
+
+    // Calculate the standard deviation
+    const standardDeviation = Math.sqrt(variance);
+
+    // Calculate the range (mean ± 1 standard deviation)
+    const lowerBound = meanScore - standardDeviation;
+    const upperBound = meanScore + standardDeviation;
 
     // Display the final predicted score
-    document.getElementById('calculatedScore').textContent = Math.round(finalPredictedScore.toFixed(2))+'Range';
+    document.getElementById('calculatedScore').textContent = Math.round(finalPredictedScore.toFixed(2))+' <h6><span class="badge text-bg-secondary"> Range<br> ${lowerBound.toFixed(2)} - ${upperBound.toFixed(2)}</span></h6>';
     document.getElementById('scoreDisplay').classList.add('score-visible');
     document.getElementById("scoreDisplay").scrollIntoView();
 }
