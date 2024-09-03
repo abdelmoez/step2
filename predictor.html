@@ -255,7 +255,7 @@
 </div>
 
 <script>
-    function calculateScore() {
+function calculateScore() {
     // Get input values
     const inputs = [
         {score: document.getElementById('nbme9').value, days: document.getElementById('nbme9d').value, weight: 0.522055605},
@@ -272,67 +272,47 @@
         {score: document.getElementById('free120_2023').value, days: document.getElementById('free120_2023d').value, weight: 0.429805012}
     ];
 
-    // Filter out empty fields and sort by days left
-    const filteredInputs = inputs
-        .filter(input => input.score !== "" && input.days !== "")
-        .sort((a, b) => parseInt(a.days) - parseInt(b.days));
+    // Filter out empty fields
+    const filteredInputs = inputs.filter(input => input.score !== "" && input.days !== "");
 
-    // If less than 2 valid inputs are provided, display an error or handle accordingly
-    if (filteredInputs.length < 2) {
+    // If no valid inputs are provided, display an error
+    if (filteredInputs.length === 0) {
         document.getElementById('calculatedScore').textContent = "Not enough data";
         document.getElementById('scoreDisplay').classList.add('score-visible');
         document.getElementById("scoreDisplay").scrollIntoView();
         return;
     }
 
-    // Take the two smallest days left
-    const closestTwo = filteredInputs.slice(0, 2);
+    // Calculate time coefficient (inversely proportional to days left)
+    const maxDays = Math.max(...filteredInputs.map(input => parseInt(input.days)));
+    filteredInputs.forEach(input => {
+        input.timeCoefficient = 1 - (parseInt(input.days) / maxDays); // The higher the days, the lower the coefficient
+    });
 
-    // Retrieve the corresponding scores and calculate (example calculation)
-    const score1 = parseFloat(closestTwo[0].score) * closestTwo[0].weight;
-    const score2 = parseFloat(closestTwo[1].score) * closestTwo[1].weight;
-    const predictedScore = (score1 + score2) / 2;
+    // Combine time coefficient with R² weight
+    filteredInputs.forEach(input => {
+        input.combinedWeight = input.weight * input.timeCoefficient;
+    });
 
-        // Log the input values to the console
-        console.log('NBME 9 Mistakes:', nbme9);
-        console.log('NBME 10 Mistakes:', nbme10);
-        console.log('NBME 11 Mistakes:', nbme11);
-        console.log('NBME 12 Mistakes:', nbme12);
-        console.log('NBME 13 Mistakes:', nbme13);
-        console.log('NBME 14 Mistakes:', nbme14);
-        console.log('UWSA 1 Mistakes:', uwsa1);
-        console.log('UWSA 2 Mistakes:', uwsa2);
-        console.log('UWSA 3 Mistakes:', uwsa3);
-        console.log('2019 Free 120 Mistakes:', free120_2019);
-        console.log('2021 Free 120 Mistakes:', free120_2021);
-        console.log('2023 Free 120 Mistakes:', free120_2023);
+    // Normalize the combined weights to sum to 1
+    const totalCombinedWeight = filteredInputs.reduce((sum, input) => sum + input.combinedWeight, 0);
+    filteredInputs.forEach(input => {
+        input.normalizedWeight = input.combinedWeight / totalCombinedWeight;
+    });
 
-        // You can add additional calculations here if needed
-        // Example: let predictedScore = calculateSomehow(nbme9, nbme10, nbme11, ...);
-		
-		var nmbe9r2 = 0.522055605;
-		var nmbe10r2 = 0.473922527;
-		var nmbe11r2 = 0.523339567;
-		var nmbe12r2 = 0.504063474;
-		var nmbe13r2 = 0.773578991;
-		var nmbe14r2 = 0.564593946;
-		var uwsa1r2 = 0.453807842;
-		var uwsa2r2 = 0.526745453;
-		var uwsa3r2 = 0.436985545;
-		var oldr2 = 0.002946717;
-		var oldnewr2 = 0.504134759;
-		var newr2 = 0.429805012;
-		
-		var nbme9t = Math.pow(inputs[1.days],2);
-		console.log(nbme9t);
-		
+    // Calculate the scaled score for each exam and sum them for the final predicted score
+    let finalPredictedScore = 0;
+    filteredInputs.forEach(input => {
+        finalPredictedScore += parseFloat(input.score) * input.normalizedWeight;
+    });
 
-        // Display the calculated score (example)
-         document.getElementById('calculatedScore').textContent = predictedScore.toFixed(2); // Replace with actual calculation
-        document.getElementById('scoreDisplay').classList.add('score-visible');
-		document.getElementById("scoreDisplay").scrollIntoView();
-		
-    }
+    // Display the final predicted score
+    document.getElementById('calculatedScore').textContent = finalPredictedScore.toFixed(2);
+    document.getElementById('scoreDisplay').classList.add('score-visible');
+    document.getElementById("scoreDisplay").scrollIntoView();
+}
+
+
 </script>
 
 </body>
