@@ -323,9 +323,12 @@
 		var oldnewr2 = 0.504134759;
 		var newr2 = 0.429805012;
 		
+		var nbme9t = Math.pow(input[1],2);
+		console.log(nbme9t);
+		
 
         // Display the calculated score (example)
-        document.getElementById('calculatedScore').textContent = "Example Score"; // Replace with actual calculation
+         document.getElementById('calculatedScore').textContent = predictedScore.toFixed(2); // Replace with actual calculation
         document.getElementById('scoreDisplay').classList.add('score-visible');
 		document.getElementById("scoreDisplay").scrollIntoView();
 		
