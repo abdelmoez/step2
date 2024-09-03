@@ -163,11 +163,13 @@
 <nav class="navbar">
     <span class="navbar-brand">SCORE CONVERTER</span>
     <button class="btn" onclick="location.href='converter.html'">SCORE CONVERTER</button>
+    
 </nav>
 
 <div class="container" style="margin-top: 50px;">
 
 <div class="score-display" id="scoreDisplay">
+<button class="btn" onclick="retreive()">Retreive</button>
         <h1>Your predicted score is:</h1>
         <p id="calculatedScore">NA</p>
     </div>
@@ -255,6 +257,11 @@
 </div>
 
 <script>
+function retreive(){
+
+	document.getElementById('nbme9').value = 236;
+	ocument.getElementById('nbme9d').value = 43;
+}
 function calculateScore() {
     // Get input values
     const inputs = [
@@ -327,7 +334,7 @@ function calculateScore() {
     finalPredictedScore += roomForImprovement;
 
     // Display the final predicted score
-    document.getElementById('calculatedScore').textContent = finalPredictedScore.toFixed(2);
+    document.getElementById('calculatedScore').textContent = Math.round(finalPredictedScore.toFixed(2));
     document.getElementById('scoreDisplay').classList.add('score-visible');
     document.getElementById("scoreDisplay").scrollIntoView();
 }
