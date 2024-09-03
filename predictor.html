@@ -283,6 +283,19 @@ function calculateScore() {
         return;
     }
 
+    // Calculate the average of the last two exams
+    const lastTwoExams = filteredInputs.slice(-2);
+    const avgLastTwo = lastTwoExams.reduce((sum, input) => sum + parseFloat(input.score), 0) / lastTwoExams.length;
+
+    // Calculate the average of all exams
+    const avgAllExams = filteredInputs.reduce((sum, input) => sum + parseFloat(input.score), 0) / filteredInputs.length;
+
+    // Calculate the significance difference and adjust weights
+    const significanceDifference = Math.abs(avgLastTwo - avgAllExams) / avgAllExams;
+    lastTwoExams.forEach(input => {
+        input.weight *= (1 + significanceDifference); // Increase weight based on significance difference
+    });
+
     // Calculate time coefficient (inversely proportional to days left)
     const maxDays = Math.max(...filteredInputs.map(input => parseInt(input.days)));
     filteredInputs.forEach(input => {
@@ -300,11 +313,18 @@ function calculateScore() {
         input.normalizedWeight = input.combinedWeight / totalCombinedWeight;
     });
 
+    // Calculate the roomForImprovement bonus
+    const lastExamDays = parseInt(lastTwoExams[1].days);
+    const roomForImprovement = Math.log(maxDays - lastExamDays + 1) * 2; // Adjust the formula as needed
+
     // Calculate the scaled score for each exam and sum them for the final predicted score
     let finalPredictedScore = 0;
     filteredInputs.forEach(input => {
         finalPredictedScore += parseFloat(input.score) * input.normalizedWeight;
     });
+
+    // Add roomForImprovement to the final predicted score
+    finalPredictedScore += roomForImprovement;
 
     // Display the final predicted score
     document.getElementById('calculatedScore').textContent = finalPredictedScore.toFixed(2);
