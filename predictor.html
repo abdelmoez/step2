@@ -160,6 +160,25 @@
     display: flex;
     flex-direction: column;
 }
+.score-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px; /* Adjust this gap as needed */
+}
+
+#calculatedScore {
+    font-size: 50px;
+    font-weight: 800;
+    text-align: center;
+}
+
+#standardDeviation {
+    font-size: 18px;
+    font-weight: 400;
+    text-align: left;
+}
+
 
     </style>
 </head>
@@ -174,10 +193,14 @@
 <div class="container" style="margin-top: 50px;">
 
 <div class="score-display" id="scoreDisplay">
-<button class="btn" onclick="retreive()">Retreive</button>
-        <h1>Your predicted score is:</h1>
-        <p id="calculatedScore">NA</p> 
-    </div>
+    <button class="btn" onclick="retreive()">Retreive</button>
+    <h1>Your predicted score is:</h1>
+    <div class="score-wrapper">
+        <span id="calculatedScore">NA</span>
+        <span id="standardDeviation"></span>
+    </div> 
+</div>
+
 
     <h1>Step 2 Score Converter</h1>
     <form>
@@ -387,11 +410,12 @@ function calculateScore() {
     const lowerBound = meanScore - standardDeviation;
     const upperBound = meanScore + standardDeviation;
 
-    // Display the final predicted score
-    document.getElementById('calculatedScore').textContent = Math.round(finalPredictedScore.toFixed(2));
-    document.getElementById('calculatedScore').innerHTML +=  `<h6><span class="badge"> ± <br> ${standardDeviation.toFixed(2)}</span></h6>`;
+	// Display the final predicted score and standard deviation
+	document.getElementById('calculatedScore').textContent = Math.round(finalPredictedScore.toFixed(2));
+	document.getElementById('standardDeviation').textContent = `± Math.round(${standardDeviation.toFixed(2)})`;
 	document.getElementById('scoreDisplay').classList.add('score-visible');
-    document.getElementById("scoreDisplay").scrollIntoView();
+	document.getElementById("scoreDisplay").scrollIntoView();
+
 }
 
 
