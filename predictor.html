@@ -258,17 +258,29 @@
     function calculateScore() {
         // Get input values
         const nbme9 = document.getElementById('nbme9').value;
+        const nbme9d = document.getElementById('nbme9d').value;
         const nbme10 = document.getElementById('nbme10').value;
+        const nbme10d = document.getElementById('nbme10d').value;
         const nbme11 = document.getElementById('nbme11').value;
+        const nbme11d = document.getElementById('nbme11d').value;
         const nbme12 = document.getElementById('nbme12').value;
+        const nbme12d = document.getElementById('nbme12d').value;
         const nbme13 = document.getElementById('nbme13').value;
+        const nbme13d = document.getElementById('nbme13d').value;
         const nbme14 = document.getElementById('nbme14').value;
+        const nbme14d = document.getElementById('nbme14d').value;
         const uwsa1 = document.getElementById('uwsa1').value;
+        const uwsa1d = document.getElementById('uwsa1d').value;
         const uwsa2 = document.getElementById('uwsa2').value;
+        const uwsa2d = document.getElementById('uwsa2d').value;
         const uwsa3 = document.getElementById('uwsa3').value;
+        const uwsa3d = document.getElementById('uwsa3d').value;
         const free120_2019 = document.getElementById('free120_2019').value;
+        const free120_2019d = document.getElementById('free120_2019d').value;
         const free120_2021 = document.getElementById('free120_2021').value;
+        const free120_2021d = document.getElementById('free120_2021d').value;
         const free120_2023 = document.getElementById('free120_2023').value;
+        const free120_2023d = document.getElementById('free120_2023d').value;
 
         // Log the input values to the console
         console.log('NBME 9 Mistakes:', nbme9);
@@ -286,6 +298,8 @@
 
         // You can add additional calculations here if needed
         // Example: let predictedScore = calculateSomehow(nbme9, nbme10, nbme11, ...);
+		
+		
 
         // Display the calculated score (example)
         document.getElementById('calculatedScore').textContent = "Example Score"; // Replace with actual calculation
