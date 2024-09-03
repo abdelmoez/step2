@@ -256,31 +256,42 @@
 
 <script>
     function calculateScore() {
-        // Get input values
-        const nbme9 = document.getElementById('nbme9').value;
-        const nbme9d = document.getElementById('nbme9d').value;
-        const nbme10 = document.getElementById('nbme10').value;
-        const nbme10d = document.getElementById('nbme10d').value;
-        const nbme11 = document.getElementById('nbme11').value;
-        const nbme11d = document.getElementById('nbme11d').value;
-        const nbme12 = document.getElementById('nbme12').value;
-        const nbme12d = document.getElementById('nbme12d').value;
-        const nbme13 = document.getElementById('nbme13').value;
-        const nbme13d = document.getElementById('nbme13d').value;
-        const nbme14 = document.getElementById('nbme14').value;
-        const nbme14d = document.getElementById('nbme14d').value;
-        const uwsa1 = document.getElementById('uwsa1').value;
-        const uwsa1d = document.getElementById('uwsa1d').value;
-        const uwsa2 = document.getElementById('uwsa2').value;
-        const uwsa2d = document.getElementById('uwsa2d').value;
-        const uwsa3 = document.getElementById('uwsa3').value;
-        const uwsa3d = document.getElementById('uwsa3d').value;
-        const free120_2019 = document.getElementById('free120_2019').value;
-        const free120_2019d = document.getElementById('free120_2019d').value;
-        const free120_2021 = document.getElementById('free120_2021').value;
-        const free120_2021d = document.getElementById('free120_2021d').value;
-        const free120_2023 = document.getElementById('free120_2023').value;
-        const free120_2023d = document.getElementById('free120_2023d').value;
+    // Get input values
+    const inputs = [
+        {score: document.getElementById('nbme9').value, days: document.getElementById('nbme9d').value, weight: 0.522055605},
+        {score: document.getElementById('nbme10').value, days: document.getElementById('nbme10d').value, weight: 0.473922527},
+        {score: document.getElementById('nbme11').value, days: document.getElementById('nbme11d').value, weight: 0.523339567},
+        {score: document.getElementById('nbme12').value, days: document.getElementById('nbme12d').value, weight: 0.504063474},
+        {score: document.getElementById('nbme13').value, days: document.getElementById('nbme13d').value, weight: 0.773578991},
+        {score: document.getElementById('nbme14').value, days: document.getElementById('nbme14d').value, weight: 0.564593946},
+        {score: document.getElementById('uwsa1').value, days: document.getElementById('uwsa1d').value, weight: 0.453807842},
+        {score: document.getElementById('uwsa2').value, days: document.getElementById('uwsa2d').value, weight: 0.526745453},
+        {score: document.getElementById('uwsa3').value, days: document.getElementById('uwsa3d').value, weight: 0.436985545},
+        {score: document.getElementById('free120_2019').value, days: document.getElementById('free120_2019d').value, weight: 0.002946717},
+        {score: document.getElementById('free120_2021').value, days: document.getElementById('free120_2021d').value, weight: 0.504134759},
+        {score: document.getElementById('free120_2023').value, days: document.getElementById('free120_2023d').value, weight: 0.429805012}
+    ];
+
+    // Filter out empty fields and sort by days left
+    const filteredInputs = inputs
+        .filter(input => input.score !== "" && input.days !== "")
+        .sort((a, b) => parseInt(a.days) - parseInt(b.days));
+
+    // If less than 2 valid inputs are provided, display an error or handle accordingly
+    if (filteredInputs.length < 2) {
+        document.getElementById('calculatedScore').textContent = "Not enough data";
+        document.getElementById('scoreDisplay').classList.add('score-visible');
+        document.getElementById("scoreDisplay").scrollIntoView();
+        return;
+    }
+
+    // Take the two smallest days left
+    const closestTwo = filteredInputs.slice(0, 2);
+
+    // Retrieve the corresponding scores and calculate (example calculation)
+    const score1 = parseFloat(closestTwo[0].score) * closestTwo[0].weight;
+    const score2 = parseFloat(closestTwo[1].score) * closestTwo[1].weight;
+    const predictedScore = (score1 + score2) / 2;
 
         // Log the input values to the console
         console.log('NBME 9 Mistakes:', nbme9);
@@ -299,11 +310,25 @@
         // You can add additional calculations here if needed
         // Example: let predictedScore = calculateSomehow(nbme9, nbme10, nbme11, ...);
 		
+		var nmbe9r2 = 0.522055605;
+		var nmbe10r2 = 0.473922527;
+		var nmbe11r2 = 0.523339567;
+		var nmbe12r2 = 0.504063474;
+		var nmbe13r2 = 0.773578991;
+		var nmbe14r2 = 0.564593946;
+		var uwsa1r2 = 0.453807842;
+		var uwsa2r2 = 0.526745453;
+		var uwsa3r2 = 0.436985545;
+		var oldr2 = 0.002946717;
+		var oldnewr2 = 0.504134759;
+		var newr2 = 0.429805012;
 		
 
         // Display the calculated score (example)
         document.getElementById('calculatedScore').textContent = "Example Score"; // Replace with actual calculation
         document.getElementById('scoreDisplay').classList.add('score-visible');
+		document.getElementById("scoreDisplay").scrollIntoView();
+		
     }
 </script>
 
