@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Step 2 Score Converter</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@100..900&display=swap" rel="stylesheet">
+    <style>
+        body, html {
+            font-family: "Heebo", sans-serif;
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #39AEA9;
+            color: #232323;
+        }
+        .navbar {
+            width: 100%;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: transparent;
+			color: white;
+        }
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 24px;
+			color: #fff;
+        }
+        .navbar .btn {
+            background-color: #39AEA9;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-weight: 600;
+            border-radius: 0;
+            transition: background-color 0.3s;
+        }
+        .navbar .btn:hover {
+            background-color: #2b7f7c;
+        }
+        .card {
+            max-width: 600px;
+            width: 100%;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 0;
+            text-align: center;
+            transform: scale(1.5);
+            transition: transform 0.5s, opacity 0.5s;
+            animation: shrinkCard 0.5s forwards;
+            margin-top: 40px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        @keyframes shrinkCard {
+            to {
+                transform: scale(1);
+            }
+        }
+        .btn-group {
+            width: 100%;
+        }
+        .btn-group .btn {
+            border: 2px solid #39AEA9;
+            color: #39AEA9;
+            background-color: transparent;
+            font-weight: 600;
+            margin-bottom: 10px;
+            padding: 15px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .btn-group .btn:hover {
+            background-color: #39AEA9;
+            color: white;
+        }
+        .container-hidden {
+            display: none;
+            transition: opacity 0.5s;
+        }
+        .container-visible {
+            display: block;
+            max-width: 800px;
+            width: 100%;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.5s;
+            animation: fadeIn 0.5s forwards;
+            margin-top: 20px;
+        }
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+        h1 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #17242A;
+        }
+        .score-display {
+            display: none;
+            text-align: center;
+            margin-bottom: 50px;
+            color: #232323;
+            font-size: 28px;
+            transition: opacity 0.5s;
+        }
+        .score-visible {
+            display: block;
+            opacity: 0;
+            animation: fadeIn 0.5s forwards;
+        }
+        #calculatedScore {
+            font-size: 50px;
+            font-weight: 800;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <span class="navbar-brand">SCORE CONVERTER</span>
+    <button class="btn" onclick="location.href='predictor.html'">SCORE PREDICTOR</button>
+</nav>
+
+<div class="score-display" id="scoreDisplay">
+    <h1>Your converted <span id="examName"></span> score is:</h1>
+    <p id="calculatedScore">NA</p>
+</div>
+
+<div class="card" id="initialCard">
+    <h1>Choose your exam</h1>
+    <div class="btn-group">
+        <button class="btn exam-btn" data-exam="2019 Free 120">2019 Free 120</button>
+        <button class="btn exam-btn" data-exam="2021 Free 120">2021 Free 120</button>
+        <button class="btn exam-btn" data-exam="2023 Free 120">2023 Free 120</button>
+    </div>
+</div>
+
+<div class="container-hidden" id="examContainer">
+    <h1 id="examTitle"></h1>
+    <select class="form-select" id="mistakeSelect">
+        <option selected disabled>Select Percentage</option>
+        <!-- Options 1 to 100 -->
+        <script>
+            for (let i = 100; i >= 1; i--) {
+                document.write('<option value="' + i + '">' + i + '</option>');
+            }
+        </script>
+    </select>
+</div>
+
+<script>
+    const examButtons = document.querySelectorAll('.exam-btn');
+    examButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const selectedExam = this.getAttribute('data-exam');
+            document.getElementById('examName').innerText = selectedExam;
+            let scoreDisplay = document.getElementById('scoreDisplay');
+            scoreDisplay.classList.add('score-visible');
+
+            document.getElementById('initialCard').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('initialCard').style.display = 'none';
+                let examContainer = document.getElementById('examContainer');
+                document.getElementById('examTitle').innerText = selectedExam;
+                examContainer.classList.remove('container-hidden');
+                examContainer.classList.add('container-visible');
+            }, 500);
+        });
+    });
+
+    document.getElementById('mistakeSelect').addEventListener('change', function() {
+        let selectedExam = document.getElementById('examTitle').innerText;
+        let numberOfMistakes = this.value;
+        calculateScore(selectedExam, numberOfMistakes);
+    });
+
+    function calculateScore(exam, mistakes) {
+        // Placeholder for the formula calculation
+        document.getElementById('calculatedScore').innerText = 'NA';
+
+        function calculateScore(mistakes) {
+            var b = 0;
+            var m = 0;
+
+            if (exam == '2023 Free 120') { b = 183.6599562; }
+            if (exam == '2023 Free 120') { m = 0.933586538; }
+            
+            const finalScore = (mistakes * m) + b;
+            return finalScore;
+        }
+
+        let score = calculateScore(mistakes);
+        document.getElementById('calculatedScore').innerText = Math.round(score);
+    }
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
