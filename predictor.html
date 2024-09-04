@@ -388,7 +388,7 @@ function calculateScore() {
 
     // Calculate the roomForImprovement bonus
     const lastExamDays = parseInt(lastTwoExams[1].days);
-    const roomForImprovement = Math.log(maxDays - lastExamDays + 1) * 2; // Adjust the formula as needed
+    const roomForImprovement = Math.log(lastExamDays + 1) * 2; // Adjust the formula as needed
 
     // Calculate the scaled score for each exam and sum them for the final predicted score
     let finalPredictedScore = 0;
