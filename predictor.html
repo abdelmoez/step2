@@ -360,7 +360,7 @@ function calculateScore() {
     }
 	const maxInputs = inputs.filter(input => input.score !== "");
 
-	if (maxInputs > 300){
+	if (maxInputs.value > 300){
 		document.getElementById('calculatedScore').textContent = "You did not get that score :)";
         document.getElementById('scoreDisplay').classList.add('score-visible');
         document.getElementById("scoreDisplay").scrollIntoView();
