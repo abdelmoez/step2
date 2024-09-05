@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="icon" type="image/jpg" href="favicon.jpg"/>
+    <link rel="icon" type="image/jpg" href="favicon.jpg"/>
     <title>Step 2 Score Converter</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -28,12 +28,12 @@
             justify-content: space-between;
             align-items: center;
             background-color: transparent;
-			color: white;
+            color: white;
         }
         .navbar-brand {
             font-weight: 700;
             font-size: 24px;
-			color: #fff;
+            color: #fff;
         }
         .navbar .btn {
             background-color: #39AEA9;
@@ -98,6 +98,22 @@
             transition: opacity 0.5s;
             animation: fadeIn 0.5s forwards;
             margin-top: 20px;
+            position: relative;
+        }
+        .back-btn {
+            position: absolute;
+            top: -20px;
+            left: -50px;
+            background-color: #39AEA9;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-weight: 600;
+            border-radius: 0;
+            transition: background-color 0.3s;
+        }
+        .back-btn:hover {
+            background-color: #2b7f7c;
         }
         @keyframes fadeIn {
             to {
@@ -126,18 +142,18 @@
             font-size: 50px;
             font-weight: 800;
         }
-		.abdulmoiz{
-			background-image:url('a.png');
-			width: 160px;
-			height: 90px;
-			background-size: 100% 100%;
-			display: block;
-			margin: 15px auto;
-			margin-top:30px;
-		}
-		.rights{
-			margin-bottom:30px;
-		}
+        .abdulmoiz {
+            background-image:url('a.png');
+            width: 160px;
+            height: 90px;
+            background-size: 100% 100%;
+            display: block;
+            margin: 15px auto;
+            margin-top:30px;
+        }
+        .rights {
+            margin-bottom:30px;
+        }
     </style>
 </head>
 <body>
@@ -164,31 +180,24 @@
 </div>
 
 <div class="container-hidden" id="examContainer">
+    <button class="back-btn" id="backBtn">Back</button>
     <h1 id="examTitle"></h1>
     <select class="form-select" id="mistakeSelect">
         <option selected disabled>Select Percentage</option>
-        <!-- Options 1 to 100 -->
-        <script>
-            for (let i = 100; i >= 1; i--) {
-                document.write('<option value="' + i + '">' + i + '</option>');
-            }
-        </script>
+        <!-- Options will be inserted here -->
     </select>
 </div>
 
-
-
-<div style="
-    margin-top: 200px;
-">
-
-	<div class="abdulmoiz"></div>
-	<div class="rights">By <a href="https://www.reddit.com/user/abdelmoezhj/" class="link-secondary link-offset-2 link-underline-opacity-0 link-underline-opacity-0-hover">abdelmoezhj</a>. NBME 13 and 14 formula by <a href="https://www.reddit.com/r/Step2/comments/14u2lg5/nbme_13_and_14_score_converter/" class="link-secondary link-offset-2 link-underline-opacity-0 link-underline-opacity-0-hover">neuro-neuro</a></div>
-
+<div style="margin-top: 200px;">
+    <div class="abdulmoiz"></div>
+    <div class="rights">By <a href="https://www.reddit.com/user/abdelmoezhj/" class="link-secondary link-offset-2 link-underline-opacity-0 link-underline-opacity-0-hover">abdelmoezhj</a>. NBME 13 and 14 formula by <a href="https://www.reddit.com/r/Step2/comments/14u2lg5/nbme_13_and_14_score_converter/" class="link-secondary link-offset-2 link-underline-opacity-0 link-underline-opacity-0-hover">neuro-neuro</a></div>
 </div>
 
 <script>
     const examButtons = document.querySelectorAll('.exam-btn');
+    const backBtn = document.getElementById('backBtn');
+    const mistakeSelect = document.getElementById('mistakeSelect');
+
     examButtons.forEach(button => {
         button.addEventListener('click', function() {
             const selectedExam = this.getAttribute('data-exam');
@@ -203,8 +212,32 @@
                 document.getElementById('examTitle').innerText = selectedExam;
                 examContainer.classList.remove('container-hidden');
                 examContainer.classList.add('container-visible');
+                
+                // Change placeholder and options for NBME 13/14
+                if (selectedExam === 'NBME 13' || selectedExam === 'NBME 14') {
+                    mistakeSelect.innerHTML = '<option selected disabled>Select Mistakes</option>';
+                    for (let i = 1; i <= 100; i++) {
+                        mistakeSelect.innerHTML += '<option value="${i}">${i}</option>';
+                    }
+                } else {
+                    mistakeSelect.innerHTML = '<option selected disabled>Select Percentage</option>';
+                    for (let i = 100; i >= 1; i--) {
+                        mistakeSelect.innerHTML += '<option value="${i}">${i}</option>';
+                    }
+                }
             }, 500);
         });
+    });
+
+    backBtn.addEventListener('click', function() {
+        let examContainer = document.getElementById('examContainer');
+        examContainer.classList.remove('container-visible');
+        examContainer.classList.add('container-hidden');
+        
+        document.getElementById('initialCard').style.display = 'block';
+        setTimeout(() => {
+            document.getElementById('initialCard').style.opacity = '1';
+        }, 50);
     });
 
     document.getElementById('mistakeSelect').addEventListener('change', function() {
@@ -214,42 +247,19 @@
     });
 
     function calculateScore(exam, mistakes) {
-        // Placeholder for the formula calculation
-        document.getElementById('calculatedScore').innerText = 'NA';
-
-        function calculateScore(mistakes) {
-            var b = 0;
-            var m = 0;
-			if (exam == '2023 Free 120' || exam == '2021 Free 120' || exam == '2019 Free 120'){
-			
-			if (exam == '2023 Free 120') { b = 171.0613059; }
-            if (exam == '2023 Free 120') { m = 1.103017449; }
-           
-			if (exam == '2021 Free 120') { b = 158.9514262; }
-            if (exam == '2021 Free 120') { m = 1.232178592; }
-            
-			if (exam == '2019 Free 120') { b = 128.85; }
-            if (exam == '2019 Free 120') { m = 1.4733; }
-            
-            const finalScore = (mistakes * m) + b;
-            return finalScore;
-			
-			}
-			
-			if (exam == 'NBME 13' ||exam == 'NBME 14' ){
-			
-				if (exam == 'NBME 13') { b = 301.2; m = 1.1231}
-				if (exam == 'NBME 14') { b = 299.5; m = 1.10421 }
-				
-				
-				const finalScore = b - (m * mistakes);
-				return finalScore;
-			}
-            
+        let b = 0;
+        let m = 0;
+        if (exam === '2023 Free 120' || exam === '2021 Free 120' || exam === '2019 Free 120') {
+            if (exam === '2023 Free 120') { b = 171.0613059; m = 1.103017449; }
+            if (exam === '2021 Free 120') { b = 158.9514262; m = 1.232178592; }
+            if (exam === '2019 Free 120') { b = 128.85; m = 1.4733; }
+        } else if (exam === 'NBME 13' || exam === 'NBME 14') {
+            if (exam === 'NBME 13') { b = 301.2; m = 1.1231; }
+            if (exam === 'NBME 14') { b = 299.5; m = 1.10421; }
         }
 
-        let score = calculateScore(mistakes);
-        document.getElementById('calculatedScore').innerText = Math.round(score);
+        let finalScore = (exam === 'NBME 13' || exam === 'NBME 14') ? (b - (m * mistakes)) : ((mistakes * m) + b);
+        document.getElementById('calculatedScore').innerText = Math.round(finalScore);
     }
 </script>
 
