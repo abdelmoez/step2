@@ -358,13 +358,13 @@ function calculateScore() {
         document.getElementById("scoreDisplay").scrollIntoView();
         return;
     }
-	const maxInputs = inputs.filter(input => input.score !== "");
+	const maxInputs = inputs.filter(input => input.score > 300);
 
-	if (maxInputs.value > 300){
+	if (maxInputs.length >= 1) {
 		document.getElementById('calculatedScore').textContent = "You did not get that score :)";
-        document.getElementById('scoreDisplay').classList.add('score-visible');
-        document.getElementById("scoreDisplay").scrollIntoView();
-        return;
+		document.getElementById('scoreDisplay').classList.add('score-visible');
+		document.getElementById("scoreDisplay").scrollIntoView();
+		return;
 	}
 
     // Calculate the average of the last two exams
