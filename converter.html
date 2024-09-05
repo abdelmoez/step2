@@ -221,12 +221,12 @@
                 if (selectedExam === 'NBME 13' || selectedExam === 'NBME 14') {
                     mistakeSelect.innerHTML = '<option selected disabled>Select Mistakes</option>';
                     for (let i = 1; i <= 100; i++) {
-                        mistakeSelect.innerHTML += '<option value="${i}">${i}</option>';
+                        mistakeSelect.innerHTML += `<option value="${i}">${i}</option>`;
                     }
                 } else {
                     mistakeSelect.innerHTML = '<option selected disabled>Select Percentage</option>';
                     for (let i = 100; i >= 1; i--) {
-                        mistakeSelect.innerHTML += '<option value="${i}">${i}</option>';
+                        mistakeSelect.innerHTML += `<option value="${i}">${i}</option>`;
                     }
                 }
             }, 500);
