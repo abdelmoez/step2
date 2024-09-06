@@ -331,8 +331,39 @@ function retreive(){
 	document.getElementById('free120_2023').value = 86;
 	document.getElementById('free120_2023d').value = 4;
 }
+// Function to load XML file (data.xml)
+function loadXML(callback) {
+    const xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if (this.readyState === 4 && this.status === 200) {
+            callback(this.responseXML);
+        }
+    };
+    xhttp.open("GET", "data.xml", true);
+    xhttp.send();
+}
+
+// Function to save the updated XML back (you'll likely need server-side support for this)
+function saveXML(xml) {
+    // You would need to send this XML to your server where it would be saved to a file.
+    // This part is dependent on your backend setup.
+}
+
+// Function to append new prediction to the XML
+function addPredictionToXML(score) {
+    // Make a request to your Netlify function to update the XML
+    fetch('/.netlify/functions/updateXml?score=' + Math.round(score))
+        .then(response => response.json())
+        .then(data => {
+            console.log(data.message);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+}
+
+// Updated calculateScore function with prediction saving logic
 function calculateScore() {
-    // Get input values
     const inputs = [
         {score: document.getElementById('nbme9').value, days: document.getElementById('nbme9d').value, weight: 0.522055605},
         {score: document.getElementById('nbme10').value, days: document.getElementById('nbme10d').value, weight: 0.473922527},
@@ -348,92 +379,66 @@ function calculateScore() {
         {score: (document.getElementById('free120_2023').value)*1.103017449 + 171.0613059, days: document.getElementById('free120_2023d').value, weight: 0.429805012}
     ];
 
-    // Filter out empty fields
     const filteredInputs = inputs.filter(input => input.score !== "" && input.days !== "");
 
-    // If no valid inputs are provided, display an error
     if (filteredInputs.length === 0) {
         document.getElementById('calculatedScore').textContent = "Not enough data";
         document.getElementById('scoreDisplay').classList.add('score-visible');
         document.getElementById("scoreDisplay").scrollIntoView();
         return;
     }
-	const maxInputs = inputs.filter(input => input.score > 300);
 
-	if (maxInputs.length >= 1) {
-		document.getElementById('calculatedScore').textContent = "You did not get that score :)";
-		document.getElementById('scoreDisplay').classList.add('score-visible');
-		document.getElementById("scoreDisplay").scrollIntoView();
-		return;
-	}
-
-    // Calculate the average of the last two exams
     const lastTwoExams = filteredInputs.slice(-2);
     const avgLastTwo = lastTwoExams.reduce((sum, input) => sum + parseFloat(input.score), 0) / lastTwoExams.length;
-
-    // Calculate the average of all exams
     const avgAllExams = filteredInputs.reduce((sum, input) => sum + parseFloat(input.score), 0) / filteredInputs.length;
 
-    // Calculate the significance difference and adjust weights
     const significanceDifference = Math.abs(avgLastTwo - avgAllExams) / avgAllExams;
     lastTwoExams.forEach(input => {
-        input.weight *= (1 + significanceDifference); // Increase weight based on significance difference
+        input.weight *= (1 + significanceDifference);
     });
 
-    // Calculate time coefficient (inversely proportional to days left)
     const maxDays = Math.max(...filteredInputs.map(input => parseInt(input.days)));
     filteredInputs.forEach(input => {
-        input.timeCoefficient = 1 - (parseInt(input.days) / maxDays); // The higher the days, the lower the coefficient
+        input.timeCoefficient = 1 - (parseInt(input.days) / maxDays);
     });
 
-    // Combine time coefficient with R² weight
     filteredInputs.forEach(input => {
         input.combinedWeight = input.weight * input.timeCoefficient;
     });
 
-    // Normalize the combined weights to sum to 1
     const totalCombinedWeight = filteredInputs.reduce((sum, input) => sum + input.combinedWeight, 0);
     filteredInputs.forEach(input => {
         input.normalizedWeight = input.combinedWeight / totalCombinedWeight;
     });
 
-    // Calculate the roomForImprovement bonus
-    const lastExamDays = parseInt(lastTwoExams[1].days);
-    const roomForImprovement = Math.log(lastExamDays + 1) * 2; // Adjust the formula as needed
-
-    // Calculate the scaled score for each exam and sum them for the final predicted score
+    const roomForImprovement = Math.log(parseInt(lastTwoExams[1].days) + 1) * 2;
     let finalPredictedScore = 0;
     filteredInputs.forEach(input => {
         finalPredictedScore += parseFloat(input.score) * input.normalizedWeight;
     });
 
-    // Add roomForImprovement to the final predicted score
     finalPredictedScore += roomForImprovement;
-	console.log(roomForImprovement);
-	
-    // Calculate the mean (already done, but explicitly stated here)
-    const meanScore = finalPredictedScore;
 
-    // Calculate the variance
+    const meanScore = finalPredictedScore;
     let variance = 0;
     filteredInputs.forEach(input => {
         variance += input.normalizedWeight * Math.pow((parseFloat(input.score) - meanScore), 2);
     });
 
-    // Calculate the standard deviation
     const standardDeviation = Math.round(Math.sqrt(variance));
-
-    // Calculate the range (mean ± 1 standard deviation)
     const lowerBound = meanScore - standardDeviation;
     const upperBound = meanScore + standardDeviation;
 
-	// Display the final predicted score and standard deviation
-	document.getElementById('calculatedScore').textContent = Math.round(finalPredictedScore.toFixed(2));
-	document.getElementById('standardDeviation').textContent = `± ${standardDeviation.toFixed(2)}`;
-	document.getElementById('scoreDisplay').classList.add('score-visible');
-	document.getElementById("scoreDisplay").scrollIntoView();
+    // Display the score
+    document.getElementById('calculatedScore').textContent = Math.round(finalPredictedScore.toFixed(2));
+    document.getElementById('standardDeviation').textContent = `± ${standardDeviation.toFixed(2)}`;
+    document.getElementById('scoreDisplay').classList.add('score-visible');
+    document.getElementById("scoreDisplay").scrollIntoView();
 
+    // Add the new prediction to the XML
+    addPredictionToXML(finalPredictedScore);
 }
+
 
 
 </script>
