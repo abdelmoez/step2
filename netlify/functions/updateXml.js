@@ -1,32 +1,51 @@
-const fetch = require('node-fetch'); // Make sure to install this package
+// Import the fetch function from node-fetch
+import fetch from 'node-fetch';
+import { parseStringPromise } from 'xml2js';
+import { stringify } from 'xml2js';
 
-exports.handler = async (event) => {
-  const repoOwner = 'abdelmoez';
-  const repoName = 'step2';
-  const workflowId = 'update-xml.yml'; // Your workflow file name
-  const githubToken = process.env.GITHUB_TOKEN;
+export async function handler(event, context) {
+  try {
+    // Your function logic here
 
-  const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/actions/workflows/${workflowId}/dispatches`, {
-    method: 'POST',
-    headers: {
-      'Accept': 'application/vnd.github.v3+json',
-      'Authorization': `token ${githubToken}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      ref: 'main' // or the branch you want to run the workflow on
-    }),
-  });
+    // Example of fetching data from GitHub
+    const response = await fetch('https://api.github.com/repos/abdelmoez/step2/contents/data.xml', {
+      headers: {
+        'Authorization': `token ${process.env.GITHUB_TOKEN}`
+      }
+    });
+    const data = await response.json();
+    const xmlContent = Buffer.from(data.content, 'base64').toString();
 
-  if (response.ok) {
+    // Parse and modify XML
+    const result = await parseStringPromise(xmlContent);
+    // Modify XML here
+    const updatedXml = ...; // Your logic to update the XML
+
+    // Convert updated XML back to string
+    const xmlString = await stringify(updatedXml);
+
+    // Upload updated XML back to GitHub
+    await fetch('https://api.github.com/repos/abdelmoez/step2/contents/data.xml', {
+      method: 'PUT',
+      headers: {
+        'Authorization': `token ${process.env.GITHUB_TOKEN}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        message: 'Update data.xml',
+        content: Buffer.from(xmlString).toString('base64'),
+        sha: data.sha
+      })
+    });
+
     return {
       statusCode: 200,
-      body: JSON.stringify({ message: 'Workflow triggered successfully!' }),
+      body: JSON.stringify({ message: 'XML updated successfully!' }),
     };
-  } else {
+  } catch (error) {
     return {
-      statusCode: response.status,
-      body: JSON.stringify({ error: 'Failed to trigger workflow' }),
+      statusCode: 500,
+      body: JSON.stringify({ error: 'Failed to update XML' }),
     };
   }
-};
+}
