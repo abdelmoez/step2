@@ -396,6 +396,7 @@ function calculateScore() {
 		document.getElementById("scoreDisplay").scrollIntoView();
 		return;
 	}
+	}
 
     const lastTwoExams = filteredInputs.slice(-2);
     const avgLastTwo = lastTwoExams.reduce((sum, input) => sum + parseFloat(input.score), 0) / lastTwoExams.length;
