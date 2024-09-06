@@ -1,0 +1,32 @@
+name: Update XML
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: # Allows manual triggering of the workflow from GitHub UI
+
+jobs:
+  update-xml:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: sudo apt-get install -y xmlstarlet
+
+      - name: Update XML file
+        run: |
+          xmlstarlet ed -L -s /DOCUMENT/NUMBER -t elem -n "count" -v "1" -d /DOCUMENT/NUMBER -i /DOCUMENT/NUMBER -t text -o "$(($(xmlstarlet sel -t -v /DOCUMENT/NUMBER data.xml) + 1))" data.xml
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Commit changes
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git add data.xml
+          git commit -m "Update XML file"
+          git push
